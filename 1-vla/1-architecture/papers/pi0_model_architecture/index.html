@@ -1,0 +1,3005 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="具身智能 / 机器人学习知识库">
+      
+      
+      
+        <link rel="canonical" href="https://pengxinzeng.github.io/KnowledgeBase/1-vla/1-architecture/papers/pi0_model_architecture/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../../2-action-generation/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>π0 模型梳理 - 知识库</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#0" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="知识库" class="md-header__button md-logo" aria-label="知识库" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            知识库
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              π0 模型梳理
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/PengxinZeng/KnowledgeBase" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="知识库" class="md-nav__button md-logo" aria-label="知识库" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    知识库
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/PengxinZeng/KnowledgeBase" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    知识库
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. VLA（视觉-语言-动作模型）
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    1. VLA（视觉-语言-动作模型）
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    架构与骨干
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    架构与骨干
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1-dual-expert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    双专家共享注意力
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文源文件
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文源文件
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    π0 模型梳理
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    π0 模型梳理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 模型整体架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 训练 Stage 与参数训练策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-siglip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 视觉编码模块（SigLIP）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tokenizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 语言 Tokenizer 模块
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-transformer-gemma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 双专家 Transformer 骨干（Gemma）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-embed_prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 前缀编码模块（embed_prefix）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-embed_suffix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 后缀编码与动作投影模块（embed_suffix）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 注意力掩码与位置编码机制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-flow-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Flow Matching 动作头模块
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Flow Matching 动作头模块">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-compute_loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 训练：compute_loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-sample_actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 推理：sample_actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-lora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. LoRA 低秩适配模块（可选）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附：模块与配置对照速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../2-action-generation/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    动作生成范式
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    动作生成范式
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../2-action-generation/1-flow-matching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flow Matching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../2-action-generation/papers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文源文件
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文源文件
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../2-world-model/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. 世界模型
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    2. 世界模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../2-world-model/1-video-prediction/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    视频预测
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    视频预测
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../2-world-model/1-video-prediction/1-latent-dynamics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    潜空间动力学
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../2-world-model/1-video-prediction/papers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文源文件
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文源文件
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../2-world-model/2-planning/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    规划与决策
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    规划与决策
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../2-world-model/2-planning/1-mpc-rollout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MPC / Rollout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../2-world-model/2-planning/papers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文源文件
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文源文件
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../3-rl/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. 强化学习
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    3. 强化学习
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../3-rl/1-offline-rl/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    离线强化学习
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    离线强化学习
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../3-rl/1-offline-rl/1-value-based/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基于值函数
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../3-rl/1-offline-rl/papers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文源文件
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文源文件
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../3-rl/2-online-rl/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    在线强化学习
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    在线强化学习
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../3-rl/2-online-rl/1-policy-gradient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    策略梯度
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../3-rl/2-online-rl/papers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    论文源文件
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    论文源文件
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 模型整体架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 训练 Stage 与参数训练策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-siglip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 视觉编码模块（SigLIP）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tokenizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 语言 Tokenizer 模块
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-transformer-gemma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 双专家 Transformer 骨干（Gemma）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-embed_prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 前缀编码模块（embed_prefix）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-embed_suffix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 后缀编码与动作投影模块（embed_suffix）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 注意力掩码与位置编码机制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-flow-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Flow Matching 动作头模块
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Flow Matching 动作头模块">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-compute_loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 训练：compute_loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-sample_actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 推理：sample_actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-lora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. LoRA 低秩适配模块（可选）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附：模块与配置对照速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="0">π0 模型梳理<a class="headerlink" href="#0" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>本文档仅梳理 <strong>π0</strong>（flow matching 版，非 π0.5 / π0-FAST）。
+路径相对于仓库根目录 <code>openpi/</code>，行号基于当前 <code>main</code> 分支。</p>
+</blockquote>
+<hr />
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 模型整体架构<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>π0 是一个 <strong>3.3B 参数的 Vision-Language-Action（VLA）模型</strong>：以预训练 VLM 理解图像与语言，再通过一个 flow matching 动作专家生成连续动作 chunk。</p>
+<p><strong>参数构成</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>参数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PaliGemma 骨干（expert 0）</td>
+<td>~3B</td>
+<td>SigLIP-So400m 视觉编码器 + Gemma-2B 语言模型</td>
+</tr>
+<tr>
+<td>Action Expert（expert 1）</td>
+<td>~300M</td>
+<td>从零初始化，Gemma 同构但更窄</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td><strong>~3.3B</strong></td>
+<td><code>src/openpi/models/pi0.py</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>架构总览</strong>：</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph IN["输入 Observation"]
+        I1["3×图像\n[B,224,224,3]"]
+        I2["语言 prompt\n[B,48]"]
+        I3["机器人 state\n[B,32]"]
+        I4["加噪动作 x_t\n[B,50,32]"]
+        I5["时间步 t\n[B]"]
+    end
+
+    subgraph ENC["编码"]
+        SIG["SigLIP 视觉编码器\n→ 256 token/图"]
+        TOK["PaliGemma Embedder\n→ 语言 token"]
+        PRJ["动作/状态投影 + 时间步 MLP"]
+    end
+
+    subgraph BB["双专家 Transformer（共享 Attention K/V）"]
+        E0["Expert 0: PaliGemma\n处理 prefix"]
+        E1["Expert 1: Action Expert\n处理 suffix"]
+    end
+
+    OUT["action_out_proj\n→ 速度场 v_t [B,50,32]"]
+
+    I1 --&gt; SIG --&gt; E0
+    I2 --&gt; TOK --&gt; E0
+    I3 --&gt; PRJ --&gt; E1
+    I4 --&gt; PRJ --&gt; E1
+    I5 --&gt; PRJ --&gt; E1
+    E0 &lt;--&gt;|共享 K/V| E1
+    E1 --&gt; OUT</code></pre>
+<p><strong>模块清单</strong>（对应后续章节）：</p>
+<table>
+<thead>
+<tr>
+<th>章节</th>
+<th>模块</th>
+<th>源码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>视觉编码模块（SigLIP）</td>
+<td><code>models/siglip.py</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>语言 Tokenizer 模块</td>
+<td><code>models/tokenizer.py</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>双专家 Transformer 骨干（Gemma）</td>
+<td><code>models/gemma.py</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>前缀编码模块（embed_prefix）</td>
+<td><code>models/pi0.py</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>后缀编码与动作投影模块（embed_suffix）</td>
+<td><code>models/pi0.py</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>注意力掩码与位置编码机制</td>
+<td><code>models/pi0.py</code> / <code>models/gemma.py</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Flow Matching 动作头模块</td>
+<td><code>models/pi0.py</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>LoRA 低秩适配模块（可选）</td>
+<td><code>models/lora.py</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键配置</strong>（<code>models/gemma.py:58</code> <code>get_config</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>width</th>
+<th>depth</th>
+<th>mlp_dim</th>
+<th>num_heads</th>
+<th>num_kv_heads</th>
+<th>head_dim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gemma_2b</code>（expert 0）</td>
+<td>2048</td>
+<td>18</td>
+<td>16384</td>
+<td>8</td>
+<td>1</td>
+<td>256</td>
+</tr>
+<tr>
+<td><code>gemma_300m</code>（expert 1）</td>
+<td>1024</td>
+<td>18</td>
+<td>4096</td>
+<td>8</td>
+<td>1</td>
+<td>256</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="12-stage">1.2 训练 Stage 与参数训练策略<a class="headerlink" href="#12-stage" title="Permanent link">&para;</a></h3>
+<p>π0 借鉴 LLM 的「预训练 + 后训练」范式，采用多阶段训练。<strong>从代码视角看</strong>，一个模型实例的训练策略由 <code>TrainConfig.freeze_filter</code>（<code>training/config.py:493</code>）与 <code>weight_loader</code> 共同决定。</p>
+<h4 id="stage-0">Stage 0：权重初始化（训练前）<a class="headerlink" href="#stage-0" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>初始化来源</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PaliGemma 骨干</td>
+<td>官方 PaliGemma 权重，或 <code>pi0_base</code> 检查点</td>
+<td><code>weight_loaders.PaliGemmaWeightLoader</code> / <code>CheckpointWeightLoader</code></td>
+</tr>
+<tr>
+<td>Action Expert</td>
+<td><strong>随机初始化（从零）</strong></td>
+<td><code>pi0.py:92-100</code> 的投影层与 <code>gemma.py</code> expert 1 权重</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>gemma.py:443</code> 的 <code>_name()</code> 让 expert 0 的权重名无后缀（如 <code>attn</code>），从而能<strong>无缝加载官方 PaliGemma 权重</strong>；expert 1 加后缀 <code>_1</code>（如 <code>attn_1</code>），从零训练。</p>
+</blockquote>
+<h4 id="stage-1pre-training">Stage 1：预训练（Pre-training）<a class="headerlink" href="#stage-1pre-training" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标</td>
+<td>获得广泛通用的物理能力与泛化性</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>自采灵巧操作数据（~10000 小时、7 种机器人构型、68 个任务）+ OXE 数据集（22 个机器人）+ 多样语言标签（任务名 + 段标注）</td>
+</tr>
+<tr>
+<td><strong>训练的参数</strong></td>
+<td><strong>全部参数</strong>（PaliGemma 骨干 + action expert，联合训练）</td>
+</tr>
+<tr>
+<td>损失</td>
+<td>文本 token 交叉熵 + 动作 flow matching MSE（同一前向、联合优化）</td>
+</tr>
+<tr>
+<td>代码对应</td>
+<td><code>freeze_filter = nnx.Nothing</code>（默认，<code>config.py:493</code>），<code>weight_loader</code> 指向 <code>pi0_base</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="stage-2-post-training">Stage 2：后训练 / 微调（Post-training）<a class="headerlink" href="#stage-2-post-training" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标</td>
+<td>在目标任务上熟练、流畅执行</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>目标任务的高质量遥操作演示（论文经验：<strong>每任务约 50 条</strong>即可）</td>
+</tr>
+<tr>
+<td><strong>训练的参数</strong></td>
+<td><strong>全部参数</strong>（full fine-tuning，与预训练同为全量更新）</td>
+</tr>
+<tr>
+<td>损失</td>
+<td>同 Stage 1（文本 CE + flow matching MSE）</td>
+</tr>
+<tr>
+<td>代码对应</td>
+<td>如 <code>pi0_libero</code>（<code>config.py:653</code>），<code>weight_loader</code> 指向 <code>pi0_base</code>，<code>num_train_steps=30000</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="stage-2lora">可选 Stage 2'：LoRA 低秩微调<a class="headerlink" href="#stage-2lora" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标</td>
+<td>低显存微调（单卡 4090 可跑）</td>
+</tr>
+<tr>
+<td><strong>训练的参数</strong></td>
+<td><strong>仅 LoRA 权重 + action expert</strong>；PaliGemma 骨干主干冻结</td>
+</tr>
+<tr>
+<td>代码对应</td>
+<td><code>pi0_libero_low_mem_finetune</code>（<code>config.py:679</code>）：<code>paligemma_variant="gemma_2b_lora"</code>、<code>action_expert_variant="gemma_300m_lora"</code>、<code>freeze_filter=...get_freeze_filter()</code>、<code>ema_decay=None</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="_1">冻结策略的代码实现<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>每个模型配置提供 <code>get_freeze_filter()</code>（<code>pi0_config.py:88</code> / <code>pi0_fast.py:127</code>）返回默认冻结过滤器；</li>
+<li>LoRA 场景：<code>nnx.All(PathRegex(".*llm.*"), nnx.Not(PathRegex(".*lora.*")))</code> —— 冻结骨干中所有<strong>非 LoRA</strong> 参数；</li>
+<li>实际可训练参数 = <code>TrainConfig.trainable_filter</code>（<code>config.py:550</code>）= <code>nnx.All(nnx.Param, nnx.Not(freeze_filter))</code>；</li>
+<li>冻结参数在初始化时被转成 bfloat16（<code>train.py:104</code>）以省显存。</li>
+</ul>
+<p><strong>三阶段参数训练策略汇总</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>数据规模</th>
+<th>PaliGemma 骨干</th>
+<th>Action Expert</th>
+<th>损失</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 初始化</td>
+<td>—</td>
+<td>加载官方/PG 权重</td>
+<td>随机</td>
+<td>—</td>
+</tr>
+<tr>
+<td>1 预训练</td>
+<td>~1 万小时 + OXE</td>
+<td>✅ 全量训练</td>
+<td>✅ 全量训练</td>
+<td>文本 CE + FM MSE</td>
+</tr>
+<tr>
+<td>2 后训练</td>
+<td>~50 条/任务</td>
+<td>✅ 全量微调</td>
+<td>✅ 全量微调</td>
+<td>文本 CE + FM MSE</td>
+</tr>
+<tr>
+<td>2' LoRA</td>
+<td>少量</td>
+<td>🔒 冻结（仅 LoRA 可训）</td>
+<td>✅ 训练</td>
+<td>文本 CE + FM MSE</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-siglip">2. 视觉编码模块（SigLIP）<a class="headerlink" href="#2-siglip" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>src/openpi/models/siglip.py</code>，实例化于 <code>pi0.py:81-91</code>。</p>
+<p><strong>功能</strong>：把 3 路 RGB 图像分别编码为 patch token 序列，作为 Transformer 前缀的视觉部分。</p>
+<p><strong>输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td>单路 RGB 图像，float32 ∈ [-1,1]</td>
+<td><code>[B, 224, 224, 3]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td>图像 token 嵌入（经 head 投影到 PaliGemma 宽度）</td>
+<td><code>[B, 256, 2048]</code></td>
+</tr>
+<tr>
+<td><code>out</code></td>
+<td>中间激活字典（调试用）</td>
+<td>dict</td>
+</tr>
+</tbody>
+</table>
+<p><strong>内部结构</strong>（variant <code>So400m/14</code>）：width=1152、depth=27、mlp_dim=4304、num_heads=16、patch_size=(14,14)、<code>pool_type="none"</code>、<code>scan=True</code>、<code>num_classes=2048</code>。</p>
+<p><strong>处理流程</strong>（<code>siglip.py:208</code>）：
+1. 输入转 float32。
+2. <strong>Patch 提取</strong>：<code>nn.Conv(width=1152, kernel=(14,14), stride=(14,14), padding="VALID")</code> → <code>[B,16,16,1152]</code> → reshape <code>[B,256,1152]</code>（224/14=16，共 256 个 patch）。
+3. <strong>位置编码</strong>：<code>posemb="learn"</code>（可学习）加到 patch token 上（<code>siglip.py:229</code>）。
+4. 转回 <code>dtype_mm</code>（bfloat16）。
+5. <strong>Encoder</strong>：27 层 <code>Encoder1DBlock</code>（LayerNorm → MHSA → 残差 → LayerNorm → MLP → 残差），用 <code>nn.scan</code> + remat 省显存。
+6. 输出 LayerNorm。
+7. <code>pool_type="none"</code> → 不做池化，返回全部 256 个 token。
+8. 经 <code>num_classes</code> head（<code>nn.Dense(2048)</code>）投影到 PaliGemma 宽度 → <code>[B,256,2048]</code>。</p>
+<blockquote>
+<p>3 路图像共用同一个 SigLIP（权重共享），各自得到 256 token，合计 768 个图像 token。</p>
+</blockquote>
+<hr />
+<h2 id="3-tokenizer">3. 语言 Tokenizer 模块<a class="headerlink" href="#3-tokenizer" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>src/openpi/models/tokenizer.py</code>，<code>PaligemmaTokenizer</code>（<code>tokenizer.py:14</code>）。</p>
+<p><strong>功能</strong>：把自然语言指令转成 PaliGemma 词表的 token id 序列 + mask。</p>
+<p><strong>输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>语言指令，如 "pick up the fork"</td>
+<td>str</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>机器人状态（<strong>π0 传 None</strong>，π0.5 才用）</td>
+<td><code>np.ndarray \| None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens</code></td>
+<td>token id（含 BOS 与结尾换行）</td>
+<td><code>[48]</code> int32</td>
+</tr>
+<tr>
+<td><code>mask</code></td>
+<td>有效性掩码（padding 为 False）</td>
+<td><code>[48]</code> bool</td>
+</tr>
+</tbody>
+</table>
+<p><strong>内部结构</strong>：<code>max_len=48</code>；底层是 SentencePiece 模型（<code>gs://big_vision/paligemma_tokenizer.model</code>）；词表大小 <code>PALIGEMMA_VOCAB_SIZE=257152</code>。</p>
+<p><strong>处理流程</strong>（<code>tokenizer.py:22</code>）：
+1. 清洗文本：<code>strip()</code>、下划线换空格、换行换空格。
+2. <strong>π0 格式</strong>（<code>state is None</code>）：<code>encode(text, add_bos=True) + encode("\n")</code>（<code>\n</code> 作为「答案开始」标记）；<strong>状态不进语言 token</strong>，而是作为连续输入给 action expert（见第 6 章）。
+3. 长度不足 <code>max_len</code> → 右侧 padding（token 补 0、mask 补 False）；超长则截断并告警。
+4. 返回 <code>(tokens, mask)</code>，最终由 <code>TokenizePrompt</code> 变换（<code>transforms.py:248</code>）写入 <code>Observation</code>。</p>
+<hr />
+<h2 id="4-transformer-gemma">4. 双专家 Transformer 骨干（Gemma）<a class="headerlink" href="#4-transformer-gemma" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>src/openpi/models/gemma.py</code>，核心类 <code>Module</code>（<code>gemma.py:340</code>）。这是 π0 的「网络主体」，也是最关键的设计。</p>
+<p><strong>功能</strong>：一套 Transformer 权重里并行跑<strong>两个专家</strong>——expert 0（PaliGemma，处理图像+语言前缀）与 expert 1（Action Expert，处理状态+动作后缀），两者<strong>共享 Attention 的 K/V</strong>，从而在同一个注意力空间里对齐视觉-语言表示与动作表示。</p>
+<p><strong>输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>embedded</code></td>
+<td>各专家的 token 嵌入列表 <code>[prefix, suffix]</code></td>
+<td><code>[B,768+L,2048]</code>、<code>[B,51,1024]</code></td>
+</tr>
+<tr>
+<td><code>positions</code></td>
+<td>各 token 位置索引</td>
+<td><code>[B, S]</code> int32</td>
+</tr>
+<tr>
+<td><code>mask</code></td>
+<td>注意力掩码</td>
+<td><code>[B,1,S,S]</code> bool</td>
+</tr>
+<tr>
+<td><code>adarms_cond</code></td>
+<td>adaRMS 条件（π0 为 None）</td>
+<td><code>[None, None]</code></td>
+</tr>
+<tr>
+<td><code>kv_cache</code></td>
+<td>KV 缓存（推理时用）</td>
+<td>tuple | None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>embedded</code></td>
+<td>各专家输出隐状态</td>
+<td><code>[B,768+L,2048]</code>、<code>[B,51,1024]</code></td>
+</tr>
+<tr>
+<td><code>kv_cache</code></td>
+<td>更新后的 KV 缓存</td>
+<td>tuple</td>
+</tr>
+</tbody>
+</table>
+<p><strong>内部结构</strong>：
+- <code>Embedder</code>（<code>gemma.py:135</code>）：词表 257152，embed_dim = expert 0 宽度 2048；
+- <code>layers</code>：<code>nn.scan</code> 的 18 层 <code>Block</code>；
+- <code>Block</code>（<code>gemma.py:284</code>）：<code>RMSNorm → Attention → gated residual → RMSNorm → FeedForward → gated residual</code>；
+- <code>Attention</code>（<code>gemma.py:158</code>）：<strong>每个专家有独立的 q/k/v einsum</strong>（命名 <code>attn</code> / <code>attn_1</code>），把两个专家的 q/k/v <strong>沿 head 维拼接</strong>后做一次共享注意力，再按专家切分输出；
+- <code>final_norms</code>：每个专家各自的最终 RMSNorm。</p>
+<p><strong>处理流程</strong>（<code>gemma.py:389</code>）：
+1. 各专家嵌入转 <code>embed_dtype</code>。
+2. 进入 <code>layers</code>（18 层 <code>Block</code>）：
+   - 每个专家的输入过 <code>pre_attention_norm</code>（RMSNorm）；
+   - <code>Attention</code> 用各专家的 q/k/v 权重投影，<strong>拼接所有专家的 q/k/v</strong>（要求 head_dim/num_heads/num_kv_heads 一致）；
+   - 加 <strong>RoPE</strong> 位置编码（<code>_apply_rope</code>，<code>gemma.py:424</code>）；
+   - 做一次多头注意力（可带 KV cache）；
+   - 按专家边界切回各自输出，各专家独立 <code>attn_vec_einsum</code> 输出投影；
+   - gated residual 相加；FFN 同理。
+3. <code>final_norms</code> 逐专家归一化后返回。</p>
+<p><strong>关键点</strong>：<code>_name(name, i)</code>（<code>gemma.py:443</code>）——expert 0 权重名不带后缀，可加载官方 PaliGemma；expert i&gt;0 带 <code>_i</code> 后缀，从零初始化。</p>
+<hr />
+<h2 id="5-embed_prefix">5. 前缀编码模块（embed_prefix）<a class="headerlink" href="#5-embed_prefix" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>src/openpi/models/pi0.py:106</code>。</p>
+<p><strong>功能</strong>：把图像 token 与语言 token 拼成 Transformer 的前缀（prefix）。</p>
+<p><strong>输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>obs.images[name]</code></td>
+<td>3 路图像</td>
+<td><code>[B,224,224,3]</code></td>
+</tr>
+<tr>
+<td><code>obs.image_masks[name]</code></td>
+<td>图像掩码</td>
+<td><code>[B]</code> bool</td>
+</tr>
+<tr>
+<td><code>obs.tokenized_prompt</code></td>
+<td>语言 token</td>
+<td><code>[B,48]</code> int32</td>
+</tr>
+<tr>
+<td><code>obs.tokenized_prompt_mask</code></td>
+<td>prompt 掩码</td>
+<td><code>[B,48]</code> bool</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens</code></td>
+<td>前缀嵌入</td>
+<td><code>[B, 768+L, 2048]</code></td>
+</tr>
+<tr>
+<td><code>input_mask</code></td>
+<td>有效性掩码</td>
+<td><code>[B, 768+L]</code> bool</td>
+</tr>
+<tr>
+<td><code>ar_mask</code></td>
+<td>注意力结构掩码（全 False → 双向）</td>
+<td><code>[768+L]</code> bool</td>
+</tr>
+</tbody>
+</table>
+<p><strong>处理流程</strong>（<code>pi0.py:106</code>）：
+1. 遍历 3 路图像，各自过 <code>PaliGemma.img(...)</code> 得 256 个 token；<code>input_mask</code> 按 <code>image_masks</code> 扩展；<code>ar_mask</code> 追加 256 个 <code>False</code>（图像 token 互相全可见）。
+2. 语言 token 过 <code>PaliGemma.llm(tokenized_prompt, method="embed")</code> 得嵌入；<code>ar_mask</code> 追加 L 个 <code>False</code>（与图像全双向注意力）。
+3. 沿序列维拼接 <code>tokens</code> / <code>input_mask</code> / <code>ar_mask</code> 并返回。</p>
+<hr />
+<h2 id="6-embed_suffix">6. 后缀编码与动作投影模块（embed_suffix）<a class="headerlink" href="#6-embed_suffix" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>src/openpi/models/pi0.py:140</code>。</p>
+<p><strong>功能</strong>：把机器人状态、加噪动作、flow matching 时间步编码成 Transformer 的后缀（suffix），并给出 adaRMS 条件。</p>
+<p><strong>输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>obs.state</code></td>
+<td>机器人状态</td>
+<td><code>[B,32]</code></td>
+</tr>
+<tr>
+<td><code>noisy_actions</code> (<code>x_t</code>)</td>
+<td>加噪动作</td>
+<td><code>[B,50,32]</code></td>
+</tr>
+<tr>
+<td><code>timestep</code></td>
+<td>flow matching 时间步</td>
+<td><code>[B]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens</code></td>
+<td>后缀嵌入</td>
+<td><code>[B,51,1024]</code></td>
+</tr>
+<tr>
+<td><code>input_mask</code></td>
+<td>有效性掩码</td>
+<td><code>[B,51]</code> bool</td>
+</tr>
+<tr>
+<td><code>ar_mask</code></td>
+<td>结构掩码（首 token True + 49 个 False）</td>
+<td><code>[51]</code> bool</td>
+</tr>
+<tr>
+<td><code>adarms_cond</code></td>
+<td>adaRMS 条件（π0 为 None）</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>涉及的可学习投影层</strong>（<code>pi0.py:92-100</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>作用</th>
+<th>维度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>action_in_proj</code></td>
+<td>加噪动作 → 动作专家宽度</td>
+<td>32 → 1024</td>
+</tr>
+<tr>
+<td><code>state_proj</code></td>
+<td>状态 → 1 个 token</td>
+<td>32 → 1024</td>
+</tr>
+<tr>
+<td><code>action_time_mlp_in</code></td>
+<td>融合 动作token‖时间嵌入</td>
+<td>2048 → 1024</td>
+</tr>
+<tr>
+<td><code>action_time_mlp_out</code></td>
+<td>融合后投影</td>
+<td>1024 → 1024</td>
+</tr>
+<tr>
+<td><code>action_out_proj</code></td>
+<td>隐状态 → 速度场</td>
+<td>1024 → 32</td>
+</tr>
+</tbody>
+</table>
+<p><strong>处理流程</strong>（π0，非 π0.5，<code>pi0.py:151-186</code>）：
+1. <strong>状态 token</strong>：<code>state_proj(state)</code> → <code>[B,1,1024]</code>；<code>ar_mask</code> 追加 <code>True</code>（前缀看不到状态 token）。
+2. <strong>动作 token</strong>：<code>action_in_proj(x_t)</code> → <code>[B,50,1024]</code>。
+3. <strong>时间步编码</strong>：<code>posemb_sincos(timestep, 1024, min_period=4e-3, max_period=4.0)</code> → <code>[B,1024]</code>。
+4. <strong>时间融合</strong>（π0 用 MLP，非 adaRMS）：把时间嵌入复制到 50 步 → 与动作 token 拼接 → <code>action_time_mlp_in → swish → action_time_mlp_out → swish</code>。
+5. <code>ar_mask</code> 追加 <code>True + [False]*49</code>（动作 token 互相双向可见）。
+6. 拼接状态 token + 动作 token，返回 <code>tokens/mask/ar_mask</code>（π0 的 <code>adarms_cond=None</code>）。</p>
+<blockquote>
+<p>π0.5 的差异：不做状态 token（状态进入语言 token），改用 <code>time_mlp_in/out</code> 生成 <code>adarms_cond</code> 经 adaRMS 注入时间步（<code>pi0.py:162-169</code>、<code>gemma.py:127</code>）。</p>
+</blockquote>
+<hr />
+<h2 id="7">7. 注意力掩码与位置编码机制<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>pi0.py:19</code>（<code>make_attn_mask</code>）、<code>pi0.py:48</code>（<code>posemb_sincos</code>）、<code>gemma.py:424</code>（<code>_apply_rope</code>）。</p>
+<p><strong>功能</strong>：控制 token 之间「谁能看见谁」，以及为 token 提供位置信息。</p>
+<p><strong><code>make_attn_mask(input_mask, mask_ar)</code></strong>：</p>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_mask</code></td>
+<td>有效性</td>
+<td><code>[B, N]</code> bool</td>
+</tr>
+<tr>
+<td><code>mask_ar</code></td>
+<td>因果结构（True=与前一个 token 分块）</td>
+<td><code>[B, N]</code> bool</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>输出</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attn_mask</code></td>
+<td>注意力可见性</td>
+<td><code>[B, N, N]</code> bool</td>
+</tr>
+</tbody>
+</table>
+<p>原理：对 <code>mask_ar</code> 做 cumsum，token 只能看见 cumsum 不大于自身的 token。例：全 0 → 双向；<code>[0,0,0,1,1,1]</code> → 前 3 个双向、后 3 个因果。</p>
+<p><strong>π0 的注意力结构</strong>（拼接 prefix + suffix 后）：
+- <strong>prefix 内部</strong>（图像 ↔ 语言）：全双向（<code>ar_mask</code> 全 False）；
+- <strong>suffix 内部</strong>：状态 token 与动作 token 分块，动作 token 之间双向；
+- <strong>prefix 看不到 suffix</strong>：状态与动作 token 的 <code>ar_mask=True</code> 阻断前缀对它们的依赖。</p>
+<p><strong>位置编码</strong>：
+- <strong>序列位置</strong>：<code>positions = cumsum(input_mask) - 1</code>，供 Transformer 使用；
+- <strong>RoPE</strong>（<code>gemma.py:424</code>）：在 Attention 中对 q/k 施加旋转位置编码，<code>max_wavelength=10000</code>；
+- <strong>时间步编码</strong>（<code>posemb_sincos</code>，<code>pi0.py:48</code>）：对 flow matching 时间步做 sin-cos 编码，<code>min_period=4e-3</code>、<code>max_period=4.0</code>。</p>
+<hr />
+<h2 id="8-flow-matching">8. Flow Matching 动作头模块<a class="headerlink" href="#8-flow-matching" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>pi0.py:189</code>（<code>compute_loss</code>）、<code>pi0.py:217</code>（<code>sample_actions</code>）。</p>
+<p><strong>功能</strong>：训练时学习「加噪动作 → 去噪速度场」的回归；推理时从纯噪声迭代去噪生成动作 chunk。这是 π0 输出连续动作的核心。</p>
+<h3 id="81-compute_loss">8.1 训练：<code>compute_loss</code><a class="headerlink" href="#81-compute_loss" title="Permanent link">&para;</a></h3>
+<p><strong>输入</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rng</code></td>
+<td>随机种子</td>
+<td><code>jax.Array</code></td>
+</tr>
+<tr>
+<td><code>observation</code></td>
+<td>观测</td>
+<td><code>Observation</code></td>
+</tr>
+<tr>
+<td><code>actions</code></td>
+<td>真实动作 chunk</td>
+<td><code>[B,50,32]</code></td>
+</tr>
+<tr>
+<td><code>train</code></td>
+<td>训练态标志（控制图像增强）</td>
+<td>bool</td>
+</tr>
+</tbody>
+</table>
+<p><strong>中间量</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>noise</code></td>
+<td>高斯噪声</td>
+<td><code>[B,50,32]</code></td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td>采样时间步 ~ Beta(1.5,1)·0.999+0.001</td>
+<td><code>[B]</code></td>
+</tr>
+<tr>
+<td><code>x_t</code></td>
+<td>加噪动作 <code>t·noise+(1-t)·actions</code></td>
+<td><code>[B,50,32]</code></td>
+</tr>
+<tr>
+<td><code>u_t</code></td>
+<td>目标速度场 <code>noise-actions</code></td>
+<td><code>[B,50,32]</code></td>
+</tr>
+<tr>
+<td><code>v_t</code></td>
+<td>网络预测速度场</td>
+<td><code>[B,50,32]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>变量名</th>
+<th>含义</th>
+<th>shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chunked_loss</code></td>
+<td>每步动作的 MSE</td>
+<td><code>[B,50]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>处理流程</strong>（<code>pi0.py:192-214</code>）：
+1. <code>preprocess_observation</code>（<code>model.py:144</code>）：训练态做图像增强（RandomCrop 0.95 / Resize / Rotate ±5° / ColorJitter），补齐 <code>image_mask</code>。
+2. 采样 <code>noise</code> 与 <code>time</code>（Beta 分布偏向更噪时间步）。
+3. 构造 <code>x_t</code>、<code>u_t</code>。
+4. <code>embed_prefix</code> + <code>embed_suffix</code>（第 5、6 章）→ 拼接 → <code>make_attn_mask</code> → 一次前向 <code>PaliGemma.llm([prefix, suffix], ...)</code>。
+5. <code>v_t = action_out_proj(suffix_out[:, -50:])</code>。
+6. 返回 <code>mean(square(v_t - u_t), axis=-1)</code>。</p>
+<h3 id="82-sample_actions">8.2 推理：<code>sample_actions</code><a class="headerlink" href="#82-sample_actions" title="Permanent link">&para;</a></h3>
+<p><strong>输入</strong>：<code>rng</code>、<code>observation</code>、<code>num_steps=10</code>（去噪步数）、<code>noise=None</code>。</p>
+<p><strong>输出</strong>：<code>x_0</code> —— 生成的动作 chunk，<code>[B,50,32]</code>。</p>
+<p><strong>处理流程</strong>（<code>pi0.py:217-279</code>）：
+1. 约定 <code>t=1</code> 为噪声、<code>t=0</code> 为目标分布；<code>dt = -1/num_steps</code>。
+2. 从纯高斯噪声出发。
+3. 先对 prefix 前向一次，填充 <strong>KV cache</strong>。
+4. <code>jax.lax.while_loop</code> 迭代 <code>num_steps</code> 次：
+   - <code>embed_suffix</code> 编码当前 <code>x_t</code> 与时间步；
+   - 用 KV cache 前向 suffix，得 <code>v_t</code>；
+   - Euler 更新 <code>x_t = x_t + dt·v_t</code>，<code>time += dt</code>。
+5. 返回去噪后的 <code>x_0</code>。</p>
+<hr />
+<h2 id="9-lora">9. LoRA 低秩适配模块（可选）<a class="headerlink" href="#9-lora" title="Permanent link">&para;</a></h2>
+<p><strong>源码</strong>：<code>src/openpi/models/lora.py</code>。</p>
+<p><strong>功能</strong>：为 Gemma 的 <code>Einsum</code> 与 <code>FeedForward</code> 注入低秩旁路，实现低显存微调。</p>
+<p><strong>输入/输出</strong>：与原模块完全一致（drop-in 替换），仅在权重上追加 LoRA 参数。</p>
+<p><strong>核心结构</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LoRAConfig</code></td>
+<td><code>lora.py:11</code></td>
+<td><code>rank</code>、<code>alpha</code>、<code>scaling_value = alpha/rank</code>（或 rsLoRA 用 <code>alpha/√rank</code>）</td>
+</tr>
+<tr>
+<td><code>Einsum</code></td>
+<td><code>lora.py:33</code></td>
+<td>基础权重 <code>w</code> + 旁路 <code>lora_a</code>/<code>lora_b</code></td>
+</tr>
+<tr>
+<td><code>FeedForward</code></td>
+<td><code>lora.py:88</code></td>
+<td>gating / linear 两条线性层各加 LoRA</td>
+</tr>
+</tbody>
+</table>
+<p><strong>处理流程</strong>：
+1. <code>Einsum.setup</code>（<code>lora.py:43</code>）：若 <code>lora_config</code> 非空，额外建 <code>w_a</code>、<code>w_b</code> 参数。
+2. <code>__call__</code>（<code>lora.py:54</code>）：<code>result = einsum(x, w) + einsum(einsum(x, w_a), w_b) * scaling_value</code>。
+3. <code>_make_lora_eqns</code>（<code>lora.py:67</code>）：自动在 einsum 方程里插入低秩维 <code>L</code>，生成两步 einsum。
+4. 启用方式：模型配置 <code>paligemma_variant="gemma_2b_lora"</code>（rank=16）、<code>action_expert_variant="gemma_300m_lora"</code>（rank=32）；配合 <code>get_freeze_filter()</code> 冻结骨干非 LoRA 参数。</p>
+<hr />
+<h2 id="_2">附：模块与配置对照速查<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>关键配置项</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>动作维度</td>
+<td><code>Pi0Config.action_dim</code></td>
+<td>32</td>
+</tr>
+<tr>
+<td>动作 chunk 长度</td>
+<td><code>Pi0Config.action_horizon</code></td>
+<td>50</td>
+</tr>
+<tr>
+<td>prompt 最大长度</td>
+<td><code>Pi0Config.max_token_len</code></td>
+<td>48</td>
+</tr>
+<tr>
+<td>骨干精度</td>
+<td><code>Pi0Config.dtype</code></td>
+<td>bfloat16</td>
+</tr>
+<tr>
+<td>视觉编码器</td>
+<td><code>variant</code></td>
+<td>So400m/14（256 token/图）</td>
+</tr>
+<tr>
+<td>骨干专家</td>
+<td><code>paligemma_variant</code> / <code>action_expert_variant</code></td>
+<td>gemma_2b / gemma_300m</td>
+</tr>
+<tr>
+<td>去噪步数</td>
+<td><code>sample_actions(num_steps=)</code></td>
+<td>10</td>
+</tr>
+<tr>
+<td>LoRA 秩</td>
+<td><code>gemma_2b_lora</code> / <code>gemma_300m_lora</code></td>
+<td>16 / 32</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.tracking", "toc.follow", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
