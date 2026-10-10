@@ -39,7 +39,10 @@ mkdocs build          # 产物在 site/
 ## 发布到 GitHub Pages
 
 推送到 `main` 分支后，`.github/workflows/deploy.yml` 会自动执行 `mkdocs gh-deploy`。
-首次使用需在仓库 Settings → Pages 中把 Source 设为 `gh-pages` 分支。
+
+- 线上地址：<https://pengxinzeng.github.io/KnowledgeBase/>
+- 仓库地址：<https://github.com/PengxinZeng/KnowledgeBase>
+- Pages 的 Source 已设为 `gh-pages` 分支
 
 ## 目录结构
 

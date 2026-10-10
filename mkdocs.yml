@@ -1,9 +1,8 @@
 site_name: 知识库
-site_description: 个人技术知识库
-
-# 部署到 GitHub Pages 后取消下面两行注释并改成你的仓库地址
-# site_url: https://<your-name>.github.io/knowledge-base/
-# repo_url: https://github.com/<your-name>/knowledge-base
+site_description: 具身智能 / 机器人学习知识库
+site_url: https://pengxinzeng.github.io/KnowledgeBase/
+repo_url: https://github.com/PengxinZeng/KnowledgeBase
+edit_uri: edit/main/docs/
 
 theme:
   name: material
