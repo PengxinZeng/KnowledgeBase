@@ -1,0 +1,111 @@
+site_name: 知识库
+site_description: 个人技术知识库
+
+# 部署到 GitHub Pages 后取消下面两行注释并改成你的仓库地址
+# site_url: https://<your-name>.github.io/knowledge-base/
+# repo_url: https://github.com/<your-name>/knowledge-base
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.top
+    - navigation.sections
+    - navigation.indexes
+    - navigation.tracking
+    - toc.follow
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+plugins:
+  - search:
+      lang:
+        - en
+        - zh
+
+# 导航显式声明：目录名保持英文（URL 干净），导航标签用中文。
+# 每个分组把该目录的 index.md 作为第一个子项；配合 navigation.indexes，
+# 分组标题即该 index 页面（可点击），且不会再重复渲染出一条同名子项。
+nav:
+  - 知识库: index.md
+
+  - 1. VLA（视觉-语言-动作模型）:
+      - 1-vla/index.md
+      - 架构与骨干:
+          - 1-vla/1-architecture/index.md
+          - 双专家共享注意力: 1-vla/1-architecture/1-dual-expert/index.md
+          - 论文源文件:
+              - 1-vla/1-architecture/papers/index.md
+              - π0 模型梳理: 1-vla/1-architecture/papers/pi0_model_architecture.md
+      - 动作生成范式:
+          - 1-vla/2-action-generation/index.md
+          - Flow Matching: 1-vla/2-action-generation/1-flow-matching/index.md
+          - 论文源文件:
+              - 1-vla/2-action-generation/papers/index.md
+
+  - 2. 世界模型:
+      - 2-world-model/index.md
+      - 视频预测:
+          - 2-world-model/1-video-prediction/index.md
+          - 潜空间动力学: 2-world-model/1-video-prediction/1-latent-dynamics/index.md
+          - 论文源文件:
+              - 2-world-model/1-video-prediction/papers/index.md
+      - 规划与决策:
+          - 2-world-model/2-planning/index.md
+          - MPC / Rollout: 2-world-model/2-planning/1-mpc-rollout/index.md
+          - 论文源文件:
+              - 2-world-model/2-planning/papers/index.md
+
+  - 3. 强化学习:
+      - 3-rl/index.md
+      - 离线强化学习:
+          - 3-rl/1-offline-rl/index.md
+          - 基于值函数: 3-rl/1-offline-rl/1-value-based/index.md
+          - 论文源文件:
+              - 3-rl/1-offline-rl/papers/index.md
+      - 在线强化学习:
+          - 3-rl/2-online-rl/index.md
+          - 策略梯度: 3-rl/2-online-rl/1-policy-gradient/index.md
+          - 论文源文件:
+              - 3-rl/2-online-rl/papers/index.md
