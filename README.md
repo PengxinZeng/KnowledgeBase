@@ -4,15 +4,20 @@
 
 ## 本地预览
 
+构建用独立的 conda 环境 `mkdocs`（Python 3.12），不往 base 或研究环境里装包：
+
 ```bash
-pip install -r requirements.txt
-mkdocs serve          # 打开 http://127.0.0.1:8000
+conda create -n mkdocs python=3.12
+conda run -n mkdocs pip install -r requirements.txt
+conda run -n mkdocs mkdocs serve     # 打开 http://127.0.0.1:8000
 ```
+
+也可以直接用环境里的可执行文件：`~/miniconda3/envs/mkdocs/bin/mkdocs serve`。
 
 ## 构建静态站点
 
 ```bash
-mkdocs build          # 产物在 site/
+conda run -n mkdocs mkdocs build     # 产物在 site/
 ```
 
 ## 新增内容

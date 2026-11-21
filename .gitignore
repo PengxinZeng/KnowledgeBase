@@ -3,3 +3,7 @@ site/
 __pycache__/
 *.pyc
 .DS_Store
+
+# 本地构建产物 / 临时目录（popo 站点、虚拟环境等）
+Temp/
+.venv*/
